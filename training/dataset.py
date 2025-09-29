@@ -62,12 +62,22 @@ class AkiaHRMDataset(Dataset):
             }
         }
 
-
-def create_dataloaders(train_pkl, val_pkl, tokenizer, batch_size=16, num_workers=4):
-    """Create train and validation dataloaders"""
+def create_dataloaders(data_pkl, tokenizer, batch_size=16, val_split=0.1, num_workers=2):
+    """Create train and validation dataloaders from single dataset"""
     
-    train_dataset = AkiaHRMDataset(train_pkl, tokenizer)
-    val_dataset = AkiaHRMDataset(val_pkl, tokenizer)
+    # Load full dataset
+    full_dataset = AkiaHRMDataset(data_pkl, tokenizer)
+    
+    # Split into train/val
+    total_size = len(full_dataset)
+    val_size = int(total_size * val_split)
+    train_size = total_size - val_size
+    
+    train_dataset, val_dataset = random_split(
+        full_dataset, 
+        [train_size, val_size],
+        generator=torch.Generator().manual_seed(42)
+    )
     
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
