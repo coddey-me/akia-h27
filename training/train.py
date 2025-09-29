@@ -142,8 +142,8 @@ def main():
         logger.info("Creating dataloaders...")
     
     train_loader, val_loader = create_dataloaders(
-        data_pkl=args.data,
-        tokenizer=tokenizer,
+        args.data,
+        tokenizer,
         batch_size=args.batch_size,
         val_split=args.val_split
     )
