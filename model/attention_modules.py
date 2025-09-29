@@ -37,6 +37,7 @@ class SparseAttention(nn.Module):
         scores = scores + attn_mask
         
         if mask is not None:
+            mask = mask.unsqueeze(1).unsqueeze(2)
             scores = scores.masked_fill(mask == 0, float('-inf'))
         
         attn = F.softmax(scores, dim=-1)
@@ -79,6 +80,7 @@ class DenseAttention(nn.Module):
         scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.head_dim)
         
         if mask is not None:
+            mask = mask.unsqueeze(1).unsqueeze(2)
             scores = scores.masked_fill(mask == 0, float('-inf'))
         
         attn = F.softmax(scores, dim=-1)
