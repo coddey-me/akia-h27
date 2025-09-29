@@ -8,7 +8,7 @@ class AkiaConfig:
     vocab_size = 50257  # GPT-2 tokenizer
     max_seq_length = 2048
     embedding_dim = 384
-    hidden_dim = 512
+    hidden_dim = 504
     num_hierarchy_levels = 4
     num_attention_heads = 6
     ffn_multiplier = 2
