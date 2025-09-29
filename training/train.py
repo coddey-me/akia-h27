@@ -26,7 +26,6 @@ from training.utils import (
     save_model_config
 )
 
-
 def parse_args():
     parser = argparse.ArgumentParser(description="Train Akia HRM")
     
@@ -50,9 +49,8 @@ def parse_args():
     parser.add_argument('--max_steps', type=int, default=10000)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
     
-    # Multi-GPU
+    # Multi-GPU - REMOVE local_rank, read from environment instead
     parser.add_argument('--use_ddp', action='store_true', help='Use DistributedDataParallel')
-    parser.add_argument('--local_rank', type=int, default=-1)
     
     # Other arguments
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoints')
@@ -69,14 +67,13 @@ def setup_distributed():
         rank = int(os.environ["RANK"])
         world_size = int(os.environ['WORLD_SIZE'])
         local_rank = int(os.environ['LOCAL_RANK'])
+        
+        torch.cuda.set_device(local_rank)
+        dist.init_process_group(backend='nccl')
     else:
         rank = 0
         world_size = 1
         local_rank = 0
-    
-    if world_size > 1:
-        torch.cuda.set_device(local_rank)
-        dist.init_process_group(backend='nccl')
     
     return rank, world_size, local_rank
 
