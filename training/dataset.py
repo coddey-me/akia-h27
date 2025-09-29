@@ -23,16 +23,13 @@ class AkiaHRMDataset(Dataset):
     def __getitem__(self, idx):
         item = self.data[idx]
         
-        # Construct hierarchical input
         low_ctx = item.get('low_level_context', '')
         high_ctx = item.get('high_level_context', '')
         input_seq = item.get('input_sequence', '')
         target = item.get('target_sequence', '')
         
-        # Format: [LOW: ...] [HIGH: ...] [INPUT: ...] [TARGET: ...]
         full_input = f"[LOW: {low_ctx}] [HIGH: {high_ctx}] [INPUT: {input_seq}] [TARGET: {target}]"
         
-        # Tokenize
         encoding = self.tokenizer(
             full_input,
             max_length=self.max_length,
@@ -43,24 +40,15 @@ class AkiaHRMDataset(Dataset):
         
         input_ids = encoding['input_ids'].squeeze(0)
         attention_mask = encoding['attention_mask'].squeeze(0)
-        
-        # Labels are same as input_ids for causal LM
         labels = input_ids.clone()
-        
-        # Mask padding tokens in labels
         labels[labels == self.tokenizer.pad_token_id] = -100
         
         return {
             'input_ids': input_ids,
             'attention_mask': attention_mask,
-            'labels': labels,
-            'metadata': {
-                'id': item.get('id', ''),
-                'domain': item.get('domain', ''),
-                'difficulty': item.get('difficulty', ''),
-                'quality_score': item.get('quality_score', 0.0)
-            }
+            'labels': labels
         }
+    # Remove metadata entirely
 
 def create_dataloaders(data_pkl, tokenizer, batch_size=16, val_split=0.1, num_workers=2):
     """Create train and validation dataloaders from single dataset"""
