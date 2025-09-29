@@ -30,7 +30,15 @@ class AkiaInference:
             config = AkiaConfig()
         
         model = AkiaForCausalLM(config)
-        model.load_state_dict(checkpoint['model_state_dict'])
+        
+        # Remove 'module.' prefix from DDP checkpoints
+        state_dict = checkpoint['model_state_dict']
+        new_state_dict = {}
+        for key, value in state_dict.items():
+            new_key = key.replace('module.', '') if key.startswith('module.') else key
+            new_state_dict[new_key] = value
+        
+        model.load_state_dict(new_state_dict)
         model.to(self.device)
         model.eval()
         
