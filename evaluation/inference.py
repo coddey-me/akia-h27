@@ -5,7 +5,11 @@ Inference utilities for Akia HRM
 import torch
 from transformers import AutoTokenizer
 from pathlib import Path
+import sys
+from pathlib import Path
 
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 class AkiaInference:
     def __init__(self, checkpoint_path, device='cuda'):
