@@ -60,7 +60,6 @@ def parse_args():
     
     return parser.parse_args()
 
-
 def setup_distributed():
     """Setup for distributed training"""
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
