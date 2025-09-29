@@ -43,7 +43,7 @@ def parse_args():
     
     # Training arguments
     parser.add_argument('--batch_size', type=int, default=16)
-    parser.add_argument('--num_epochs', type=int, default=5)
+    parser.add_argument('--num_epochs', type=int, default=8)
     parser.add_argument('--learning_rate', type=float, default=5e-4)
     parser.add_argument('--warmup_steps', type=int, default=500)
     parser.add_argument('--max_steps', type=int, default=10000)
