@@ -10,7 +10,7 @@ class AkiaConfig:
     embedding_dim = 384
     hidden_dim = 504
     num_hierarchy_levels = 4
-    num_attention_heads = 6
+    num_attention_heads = 8
     ffn_multiplier = 2
     dropout = 0.1
     
