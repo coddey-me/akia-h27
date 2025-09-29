@@ -49,7 +49,7 @@ def parse_args():
     parser.add_argument('--max_steps', type=int, default=10000)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
     
-    # Multi-GPU - REMOVE local_rank, read from environment instead
+    # Multi-GPU
     parser.add_argument('--use_ddp', action='store_true', help='Use DistributedDataParallel')
     
     # Other arguments
@@ -58,7 +58,9 @@ def parse_args():
     parser.add_argument('--resume_from', type=str, default=None)
     parser.add_argument('--seed', type=int, default=42)
     
-    return parser.parse_args()
+    # Parse known args only, ignore --local-rank from torchrun
+    args, unknown = parser.parse_known_args()
+    return args
 
 def setup_distributed():
     """Setup for distributed training"""
