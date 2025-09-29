@@ -73,6 +73,7 @@ class AkiaHRM(nn.Module):
         
         # Create position ids
         position_ids = torch.arange(L, dtype=torch.long, device=input_ids.device)
+        position_ids = position_ids.clamp(max=self.config.max_seq_length - 1)  # Add this line
         position_ids = position_ids.unsqueeze(0).expand(B, -1)
         
         # Embeddings
