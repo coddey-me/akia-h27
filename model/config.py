@@ -6,11 +6,11 @@ Architecture specifications and hyperparameters
 class AkiaConfig:
     # Model Architecture
     vocab_size = 50257  # GPT-2 tokenizer
-    max_seq_length = 2048
-    embedding_dim = 384
-    hidden_dim = 512
+    max_seq_length = 1024
+    embedding_dim = 256
+    hidden_dim = 256
     num_hierarchy_levels = 4
-    num_attention_heads = 8
+    num_attention_heads = 4
     ffn_multiplier = 2
     dropout = 0.1
     
