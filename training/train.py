@@ -79,7 +79,9 @@ def parse_args():
     parser.add_argument('--adam_beta1', type=float, default=0.9)
     parser.add_argument('--adam_beta2', type=float, default=0.999)
     # ADD:
-    parser.add_argument('--use_fp16', action='store_true', default=True,help='Use mixed precision training')
+    # use_fp16: default False; enable with --use_fp16
+    parser.add_argument('--use_fp16', action='store_true', help='Use mixed precision training (torch.amp)')
+
     parser.add_argument('--fp16_opt_level', type=str, default='O1',help='Apex mixed precision optimization level')
     # ADD:
     parser.add_argument('--num_workers', type=int, default=2,help='Number of dataloader workers')
