@@ -171,7 +171,7 @@ def main():
         adam_epsilon=args.adam_epsilon,
         adam_beta1=args.adam_beta1,
         adam_beta2=args.adam_beta2,
-        use_fp16=args.use_fp16,
+        precision=args.precision,
         logging_steps=args.logging_steps,
         save_steps=args.save_steps,
         eval_steps=args.eval_steps,
