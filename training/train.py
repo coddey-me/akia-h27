@@ -46,8 +46,8 @@ def parse_args():
     parser.add_argument('--num_epochs', type=int, default=8)
     #parser.add_argument('--learning_rate', type=float, default=5e-4) -- was changed to new additions
     parser.add_argument('--warmup_steps', type=int, default=500)
-    parser.add_argument('--max_steps', type=int, default=10000)
-    parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
+    parser.add_argument('--max_steps', type=int, default=5000)
+    parser.add_argument('--gradient_accumulation_steps', type=int, default=4)
     
     # Multi-GPU
     parser.add_argument('--use_ddp', action='store_true', help='Use DistributedDataParallel')
