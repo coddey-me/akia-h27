@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('--num_epochs', type=int, default=8)
     #parser.add_argument('--learning_rate', type=float, default=5e-4) -- was changed to new additions
     parser.add_argument('--warmup_steps', type=int, default=500)
-    parser.add_argument('--max_steps', type=int, default=5000)
+    parser.add_argument('--max_steps', type=int, default=10000)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
     
     # Multi-GPU
@@ -80,9 +80,14 @@ def parse_args():
     parser.add_argument('--adam_beta2', type=float, default=0.999)
     # ADD:
     # use_fp16: default False; enable with --use_fp16
-    parser.add_argument('--use_fp16', action='store_true', help='Use mixed precision training (torch.amp)')
+    parser.add_argument(
+    '--precision',
+    type=str,
+    default='fp32',
+    choices=['fp32', 'fp16'],
+    help='Precision to use during training (fp32 = full precision, fp16 = mixed precision)'
+)
 
-    parser.add_argument('--fp16_opt_level', type=str, default='O1',help='Apex mixed precision optimization level')
     # ADD:
     parser.add_argument('--num_workers', type=int, default=2,help='Number of dataloader workers')
     parser.add_argument('--pin_memory', action='store_true', default=True,help='Pin memory for faster GPU transfer')
