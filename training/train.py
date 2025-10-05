@@ -44,7 +44,7 @@ def parse_args():
     # Training arguments
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--num_epochs', type=int, default=8)
-    parser.add_argument('--learning_rate', type=float, default=5e-4)
+    #parser.add_argument('--learning_rate', type=float, default=5e-4) -- was changed to new additions
     parser.add_argument('--warmup_steps', type=int, default=500)
     parser.add_argument('--max_steps', type=int, default=10000)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
@@ -57,6 +57,37 @@ def parse_args():
     parser.add_argument('--log_dir', type=str, default='logs')
     parser.add_argument('--resume_from', type=str, default=None)
     parser.add_argument('--seed', type=int, default=42)
+
+    #new additions
+    # ADD to parse_args():
+    parser.add_argument('--max_grad_norm', type=float, default=1.0, help='Max gradient norm for clipping')
+    parser.add_argument('--detect_nan', action='store_true', default=True, help='Enable NaN detection during training')
+    parser.add_argument('--learning_rate', type=float, default=1e-4)  # Changed from 5e-4
+    parser.add_argument('--label_smoothing', type=float, default=0.1, help='Label smoothing for loss function')
+    parser.add_argument('--save_steps', type=int, default=61010, help='Save checkpoint every N steps')
+    parser.add_argument('--keep_last_n_checkpoints', type=int, default=3, help='Keep only last N checkpoints to save space')
+    parser.add_argument('--early_stopping_patience', type=int, default=3, help='Stop if val loss doesnt improve for N evals')
+    parser.add_argument('--early_stopping_threshold', type=float, default=0.001, help='Minimum improvement to count as progress')
+    # ADD:
+    parser.add_argument('--lr_scheduler_type', type=str, default='cosine',choices=['linear', 'cosine', 'constant'],help='Type of learning rate scheduler')
+    parser.add_argument('--min_lr', type=float, default=1e-6,help='Minimum learning rate for scheduler')
+    # ADD:
+    parser.add_argument('--weight_decay', type=float, default=0.01,
+                       help='Weight decay for AdamW optimizer')
+    parser.add_argument('--adam_epsilon', type=float, default=1e-8,help='Epsilon for Adam optimizer')
+    parser.add_argument('--adam_beta1', type=float, default=0.9)
+    parser.add_argument('--adam_beta2', type=float, default=0.999)
+    # ADD:
+    parser.add_argument('--use_fp16', action='store_true', default=True,help='Use mixed precision training')
+    parser.add_argument('--fp16_opt_level', type=str, default='O1',help='Apex mixed precision optimization level')
+    # ADD:
+    parser.add_argument('--num_workers', type=int, default=2,help='Number of dataloader workers')
+    parser.add_argument('--pin_memory', action='store_true', default=True,help='Pin memory for faster GPU transfer')
+    # ADD:
+    parser.add_argument('--logging_steps', type=int, default=10,help='Log training metrics every N steps')
+    parser.add_argument('--log_level', type=str, default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'])
+
+# This needs to be passed to trainer and implemented there
     
     # Parse known args only, ignore --local-rank from torchrun
     args, unknown = parser.parse_known_args()
@@ -99,7 +130,7 @@ def main():
         logger.info(f"Arguments: {args}")
     
     # Create config
-    config = AkiaConfig(
+    """config = AkiaConfig(
         vocab_size=args.vocab_size,
         max_seq_length=args.max_seq_length,
         embedding_dim=args.embedding_dim,
@@ -111,6 +142,34 @@ def main():
         warmup_steps=args.warmup_steps,
         max_steps=args.max_steps,
         gradient_accumulation_steps=args.gradient_accumulation_steps
+    )"""
+    # REPLACE config creation with:
+    config = AkiaConfig(
+        vocab_size=args.vocab_size,
+        max_seq_length=args.max_seq_length,
+        embedding_dim=args.embedding_dim,
+        hidden_dim=args.hidden_dim,
+        num_hierarchy_levels=args.num_levels,
+        num_attention_heads=args.num_heads,
+        batch_size=args.batch_size,
+        learning_rate=args.learning_rate,
+        warmup_steps=args.warmup_steps,
+        max_steps=args.max_steps,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        # ADD THESE:
+        max_grad_norm=args.max_grad_norm,
+        label_smoothing=args.label_smoothing,
+        weight_decay=args.weight_decay,
+        adam_epsilon=args.adam_epsilon,
+        adam_beta1=args.adam_beta1,
+        adam_beta2=args.adam_beta2,
+        use_fp16=args.use_fp16,
+        logging_steps=args.logging_steps,
+        save_steps=args.save_steps,
+        eval_steps=args.eval_steps,
+        early_stopping_patience=args.early_stopping_patience,
+        lr_scheduler_type=args.lr_scheduler_type,
+        min_lr=args.min_lr,
     )
     
     # Initialize model
