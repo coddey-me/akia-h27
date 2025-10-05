@@ -35,11 +35,11 @@ def parse_args():
     
     # Model arguments
     parser.add_argument('--vocab_size', type=int, default=50257)
-    parser.add_argument('--max_seq_length', type=int, default=2048)
-    parser.add_argument('--embedding_dim', type=int, default=384)
-    parser.add_argument('--hidden_dim', type=int, default=512)
+    parser.add_argument('--max_seq_length', type=int, default=1024)
+    parser.add_argument('--embedding_dim', type=int, default=256)
+    parser.add_argument('--hidden_dim', type=int, default=256)
     parser.add_argument('--num_levels', type=int, default=4)
-    parser.add_argument('--num_heads', type=int, default=6)
+    parser.add_argument('--num_heads', type=int, default=4)
     
     # Training arguments
     parser.add_argument('--batch_size', type=int, default=16)
