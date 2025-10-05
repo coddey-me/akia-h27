@@ -64,7 +64,7 @@ def parse_args():
     parser.add_argument('--detect_nan', action='store_true', default=True, help='Enable NaN detection during training')
     parser.add_argument('--learning_rate', type=float, default=1e-4)  # Changed from 5e-4
     parser.add_argument('--label_smoothing', type=float, default=0.1, help='Label smoothing for loss function')
-    parser.add_argument('--save_steps', type=int, default=6100, help='Save checkpoint every N steps')
+    parser.add_argument('--save_steps', type=int, default=1000, help='Save checkpoint every N steps')
     parser.add_argument('--eval_steps', type=int, default=1000) #added eval steps here after line 61 commit
     parser.add_argument('--keep_last_n_checkpoints', type=int, default=3, help='Keep only last N checkpoints to save space')
     parser.add_argument('--early_stopping_patience', type=int, default=3, help='Stop if val loss doesnt improve for N evals')
