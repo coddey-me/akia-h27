@@ -208,7 +208,7 @@ def main():
     # Create dataloaders
     if is_main:
         logger.info("Creating dataloaders...")
-    train_dataset = torch.load("dataset.pt")
+    train_dataset = torch.load("dataset.pt", weights_only=False)
     train_loader, val_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
