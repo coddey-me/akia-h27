@@ -218,7 +218,7 @@ def main():
         batch_size=2,
         
         num_workers=8,
-        pin_memory=True
+        
     )
 
     
