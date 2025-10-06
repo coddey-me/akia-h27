@@ -215,7 +215,7 @@ def main():
     )
     train_loader, val_loader = create_dataloaders(
         train_dataset,
-        batch_size=batch_size,
+        batch_size=2,
         shuffle=True,
         num_workers=8,
         pin_memory=True
