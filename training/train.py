@@ -208,7 +208,11 @@ def main():
     # Create dataloaders
     if is_main:
         logger.info("Creating dataloaders...")
-    train_dataset = torch.load("dataset.pt", weights_only=False)
+
+    data = torch.load("training/dataset.pt")
+    train_dataset = torch.utils.data.TensorDataset(
+        data["input_ids"], data["attention_mask"]
+    )
     train_loader, val_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
