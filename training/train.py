@@ -216,7 +216,7 @@ def main():
     train_loader, val_loader = create_dataloaders(
         train_dataset,
         batch_size=2,
-        tokenizer,
+        tokenizer=tokenizer,
         num_workers=8,
         val_split=args.val_split,)
 
