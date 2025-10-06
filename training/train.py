@@ -213,7 +213,7 @@ def main():
     train_dataset = torch.utils.data.TensorDataset(
         data["input_ids"], data["attention_mask"]
     )
-    train_loader, val_loader = DataLoader(
+    train_loader, val_loader = create_dataloaders(
         train_dataset,
         batch_size=batch_size,
         shuffle=True,
