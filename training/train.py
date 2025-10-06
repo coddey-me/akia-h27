@@ -251,16 +251,16 @@ def main():
     if is_main:
         logger.info("Starting training...")
     for epoch in range(num_epochs):
-    for step, batch in enumerate(train_loader):
-        inputs, labels = batch
-        optimizer.zero_grad()
-
-        with torch.autocast(device_type="cuda", dtype=autocast_dtype):
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-
-        loss.backward()
-        optimizer.step()
+        for step, batch in enumerate(train_loader):
+            inputs, labels = batch
+            optimizer.zero_grad()
+    
+            with torch.autocast(device_type="cuda", dtype=autocast_dtype):
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+    
+            loss.backward()
+            optimizer.step()
 
     
     try:
