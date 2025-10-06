@@ -218,7 +218,7 @@ def main():
         batch_size=2,
         tokenizer,
         num_workers=8,
-        val_split=args.val_split
+        val_split=args.val_split,
     )
 
     
