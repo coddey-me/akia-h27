@@ -64,7 +64,7 @@ def parse_args():
     parser.add_argument('--detect_nan', action='store_true', default=True, help='Enable NaN detection during training')
     parser.add_argument('--learning_rate', type=float, default=1e-4)  # Changed from 5e-4
     parser.add_argument('--label_smoothing', type=float, default=0.1, help='Label smoothing for loss function')
-    parser.add_argument('--save_steps', type=int, default=48808, help='Save checkpoint every N steps')
+    parser.add_argument('--save_steps', type=int, default=2000, help='Save checkpoint every N steps')
     parser.add_argument('--eval_steps', type=int, default=1000) #added eval steps here after line 61 commit
     parser.add_argument('--keep_last_n_checkpoints', type=int, default=3, help='Keep only last N checkpoints to save space')
     parser.add_argument('--early_stopping_patience', type=int, default=3, help='Stop if val loss doesnt improve for N evals')
@@ -83,10 +83,11 @@ def parse_args():
     parser.add_argument(
     '--precision',
     type=str,
-    default='fp32',
-    choices=['fp32', 'fp16'],
-    help='Precision to use during training (fp32 = full precision, fp16 = mixed precision)'
-)
+    default='bf16',
+    choices=['fp32', 'fp16', 'bf16'],
+    help='Precision to use during training'
+    )
+
 
     # ADD:
     parser.add_argument('--num_workers', type=int, default=2,help='Number of dataloader workers')
@@ -207,13 +208,15 @@ def main():
     # Create dataloaders
     if is_main:
         logger.info("Creating dataloaders...")
-    
-    train_loader, val_loader = create_dataloaders(
-        args.data,
-        tokenizer,
-        batch_size=args.batch_size,
-        val_split=args.val_split
+    train_dataset = torch.load("dataset.pt")
+    train_loader, val_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=8,
+        pin_memory=True
     )
+
     
     if is_main:
         logger.info(f"Training samples: {len(train_loader.dataset)}")
@@ -222,6 +225,13 @@ def main():
     # Initialize trainer
     if is_main:
         logger.info("Initializing trainer...")
+    if config.precision == "fp16":
+        autocast_dtype = torch.float16
+    elif config.precision == "bf16":
+        autocast_dtype = torch.bfloat16
+    else:
+        autocast_dtype = torch.float32
+
     
     trainer = AkiaTrainer(
         model=model,
@@ -240,6 +250,18 @@ def main():
     # Train
     if is_main:
         logger.info("Starting training...")
+    for epoch in range(num_epochs):
+    for step, batch in enumerate(train_loader):
+        inputs, labels = batch
+        optimizer.zero_grad()
+
+        with torch.autocast(device_type="cuda", dtype=autocast_dtype):
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+
+        loss.backward()
+        optimizer.step()
+
     
     try:
         trainer.train(num_epochs=args.num_epochs)
